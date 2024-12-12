@@ -372,6 +372,24 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+/* Note on ThreadSanitizer and dynamic annotations:
+ *
+ * This header uses a dual approach for dynamic annotation functions:
+ * 
+ * 1. When ThreadSanitizer is enabled and Abseil embeded(ABSL_HAVE_THREAD_SANITIZER is defined):
+ *    - Functions (e.g. AnnotateBenignRaceSized) are provided by ThreadSanitizer runtime
+ *    - No declarations needed here as they come from ThreadSanitizer
+ * 
+ * 2. When ThreadSanitizer is disabled:
+ *    - Functions are declared here with unprefixed names
+ *    - This provides API compatibility while having no runtime effect
+ * 
+ * All functions are accessed through _Py_ prefixed macros defined above, allowing:
+ *   - Consistent API usage in CPython code
+ *   - Zero overhead when ThreadSanitizer is disabled
+ *   - Full ThreadSanitizer functionality when enabled
+ */
+#ifndef ABSL_HAVE_THREAD_SANITIZER
 void AnnotateRWLockCreate(const char *file, int line,
                           const volatile void *lock);
 void AnnotateRWLockDestroy(const char *file, int line,
@@ -437,6 +455,7 @@ void AnnotateEnableRaceDetection(const char *file, int line, int enable);
 void AnnotateNoOp(const char *file, int line,
                   const volatile void *arg);
 void AnnotateFlushState(const char *file, int line);
+#endif  /*ABSL_HAVE_THREAD_SANITIZER*/
 
 /* Return non-zero value if running under valgrind.
 
