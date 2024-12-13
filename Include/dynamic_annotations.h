@@ -419,10 +419,12 @@ void AnnotateExpectRace(const char *file, int line,
 void AnnotateBenignRace(const char *file, int line,
                         const volatile void *address,
                         const char *description);
+/// proton: starts.
 void AnnotateBenignRaceSized(const char *file, int line,
                         const volatile void *address,
-                        long size,
+                        size_t size,
                         const char *description);
+/// proton: ends.
 void AnnotateMutexIsUsedAsCondVar(const char *file, int line,
                                   const volatile void *mu);
 void AnnotateTraceMemory(const char *file, int line,
